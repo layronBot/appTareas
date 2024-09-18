@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "131116740387",
+    "project_id": "apptareas-828b1",
+    "storage_bucket": "apptareas-828b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131116740387:android:ccd2adce6936d1b4f7a696",
+        "android_client_info": {
+          "package_name": "app.meedu.app_tareas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiP5lMsZc8djA3TOOH9SO9lHzn0lxPSek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

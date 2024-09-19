@@ -16,10 +16,15 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Logger _logger = Logger();
+  bool _isLoading = false;
 
   // Método para iniciar sesión con correo y contraseña
   Future<void> _loginWithEmail() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        // Deshabilitar el botón mientras se procesa la autenticación
+        _isLoading = true;
+      });
       try {
         await _auth.signInWithEmailAndPassword(
           email: _emailController.text,
@@ -27,7 +32,17 @@ class LoginPageState extends State<LoginPage> {
         );
         _logger.i('Inicio de sesión exitoso');
       } catch (e) {
+        // Mensaje de error más específico
         _logger.e('Error al iniciar sesión: $e');
+        if (mounted) { // Verificar si el widget está montado
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${e.toString()}'))
+          );
+        }
+      } finally {
+        setState(() {
+          _isLoading = false; // Rehabilitar el botón
+        });
       }
     }
   }
@@ -84,8 +99,10 @@ class LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _loginWithEmail,
-                child: const Text('Iniciar Sesión'),
+                onPressed: _isLoading ? null : _loginWithEmail,
+                child: _isLoading 
+                  ? const CircularProgressIndicator() // Agregado 'const' aquí
+                  : const Text('Iniciar Sesión'),
               ),
               ElevatedButton(
                 onPressed: _loginWithGoogle,

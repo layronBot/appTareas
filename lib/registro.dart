@@ -30,10 +30,32 @@ class RegisterPageState extends State<RegisterPage> {
           password: _passwordController.text,
         );
         _logger.i('Registro exitoso');
+        if (mounted) {
+          // Redirigir a la pantalla de bienvenida
+          Navigator.pushReplacementNamed(context, '/bienvenido');
+        }
       } catch (e) {
         _logger.e('Error al registrarse: $e');
+      } finally {
+        // Verificar si el widget está montado antes de usar el contexto
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, '/bienvenido'); // Redirigir a la pantalla de bienvenida
+        }
       }
     }
+  }
+
+  // Método para validar el correo electrónico
+  String? _emailValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor ingresa tu correo';
+    }
+    const pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    final regex = RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      return 'Por favor ingresa un correo válido';
+    }
+    return null;
   }
 
   @override
@@ -50,12 +72,7 @@ class RegisterPageState extends State<RegisterPage> {
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Correo Electrónico'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa tu correo';
-                  }
-                  return null;
-                },
+                validator: _emailValidator, // Cambiado a la nueva función de validación
               ),
               TextFormField(
                 controller: _passwordController,

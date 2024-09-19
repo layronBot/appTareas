@@ -8,10 +8,12 @@ import 'package:app_tareas/paginas/bienvenido.dart'; // Asumiendo que tienes una
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // Inicializar Firebase
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,10 +21,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AuthWrapper(), // Verifica si el usuario está autenticado
+      home: const AuthWrapper(), // Verifica si el usuario está autenticado
       routes: {
-        '/login': (context) => LoginPage(),
-        '/registro': (context) => RegisterPage(),
+        '/login': (context) => const LoginPage(),
+        '/registro': (context) => const RegisterPage(),
         '/bienvenido': (context) => BienvenidoPage(), // Pantalla de bienvenida
       },
     );
@@ -31,19 +33,21 @@ class MyApp extends StatelessWidget {
 
 // Clase para verificar si el usuario está autenticado o no
 class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(), // Escucha el estado de autenticación
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(body: Center(child: CircularProgressIndicator()));
         } else if (snapshot.hasData) {
           // Si el usuario ya está autenticado, ve a la pantalla de bienvenida
           return BienvenidoPage(); // Asumiendo que tienes esta pantalla
         } else {
           // Si no está autenticado, ve a la pantalla de login
-          return LoginPage();
+          return const LoginPage();
         }
       },
     );

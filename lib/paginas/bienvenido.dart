@@ -6,22 +6,18 @@ class BienvenidoPage extends StatelessWidget {
   // Obtiene el usuario actual de Firebase
   final User? user = FirebaseAuth.instance.currentUser;
 
+  BienvenidoPage({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final User? user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bienvenido'),
+        title: const Text('Bienvenido'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () async {
-              // Cerrar sesión del usuario
-              await FirebaseAuth.instance.signOut();
-              // Navegar de regreso a la pantalla de login
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            },
+            icon: const Icon(Icons.logout),
+            onPressed: () => _cerrarSesion(context),
           ),
         ],
       ),
@@ -33,22 +29,31 @@ class BienvenidoPage extends StatelessWidget {
             children: [
               Text(
                 'Bienvenido, ${user?.email ?? 'Usuario'}',
-                style: TextStyle(fontSize: 24),
+                style: const TextStyle(fontSize: 24),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
+                  if (!context.mounted) return;
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 },
-                child: Text('Cerrar Sesión'),
+                child: const Text('Cerrar Sesión'),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _cerrarSesion(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    if (!context.mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const LoginPage()),
     );
   }
 }

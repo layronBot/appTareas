@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:logger/logger.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  RegisterPageState createState() => RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final Logger _logger = Logger();
 
   // Método para registrar al usuario con correo electrónico y contraseña
   Future<void> _registerWithEmail() async {
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
-        print('Las contraseñas no coinciden');
+        _logger.w('Las contraseñas no coinciden');
         return;
       }
       try {
@@ -25,9 +29,9 @@ class _RegisterPageState extends State<RegisterPage> {
           email: _emailController.text,
           password: _passwordController.text,
         );
-        print('Registro exitoso');
+        _logger.i('Registro exitoso');
       } catch (e) {
-        print('Error al registrarse: $e');
+        _logger.e('Error al registrarse: $e');
       }
     }
   }
@@ -35,7 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Registro de Usuario')),
+      appBar: AppBar(title: const Text('Registro de Usuario')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -45,7 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Correo Electrónico'),
+                decoration: const InputDecoration(labelText: 'Correo Electrónico'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingresa tu correo';
@@ -55,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Contraseña'),
+                decoration: const InputDecoration(labelText: 'Contraseña'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -66,7 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               TextFormField(
                 controller: _confirmPasswordController,
-                decoration: InputDecoration(labelText: 'Confirmar Contraseña'),
+                decoration: const InputDecoration(labelText: 'Confirmar Contraseña'),
                 obscureText: true,
                 validator: (value) {
                   if (value != _passwordController.text) {
@@ -75,10 +79,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _registerWithEmail,
-                child: Text('Registrarse'),
+                child: const Text('Registrarse'),
               ),
             ],
           ),

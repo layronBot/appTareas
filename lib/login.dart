@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final Logger _logger = Logger();
 
   // Método para iniciar sesión con correo y contraseña
   Future<void> _loginWithEmail() async {
@@ -21,10 +25,9 @@ class _LoginPageState extends State<LoginPage> {
           email: _emailController.text,
           password: _passwordController.text,
         );
-        // Redireccionar o mostrar mensaje de éxito
-        print('Inicio de sesión exitoso');
+        _logger.i('Inicio de sesión exitoso');
       } catch (e) {
-        print('Error al iniciar sesión: $e');
+        _logger.e('Error al iniciar sesión: $e');
       }
     }
   }
@@ -40,9 +43,9 @@ class _LoginPageState extends State<LoginPage> {
       );
       try {
         await _auth.signInWithCredential(credential);
-        print('Inicio de sesión con Google exitoso');
+        _logger.i('Inicio de sesión con Google exitoso');
       } catch (e) {
-        print('Error al iniciar sesión con Google: $e');
+        _logger.e('Error al iniciar sesión con Google: $e');
       }
     }
   }
@@ -50,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Iniciar Sesión')),
+      appBar: AppBar(title: const Text('Iniciar Sesión')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -60,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Correo Electrónico'),
+                decoration: const InputDecoration(labelText: 'Correo Electrónico'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingresa tu correo';
@@ -70,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Contraseña'),
+                decoration: const InputDecoration(labelText: 'Contraseña'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -79,20 +82,20 @@ class _LoginPageState extends State<LoginPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _loginWithEmail,
-                child: Text('Iniciar Sesión'),
+                child: const Text('Iniciar Sesión'),
               ),
               ElevatedButton(
                 onPressed: _loginWithGoogle,
-                child: Text('Iniciar Sesión con Google'),
+                child: const Text('Iniciar Sesión con Google'),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/registro');
                 },
-                child: Text('¿No tienes una cuenta? Regístrate aquí'),
+                child: const Text('¿No tienes una cuenta? Regístrate aquí'),
               ),
             ],
           ),
